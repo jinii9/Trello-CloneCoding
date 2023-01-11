@@ -20,19 +20,23 @@ const request = (method, url, data) => {
     })
 }
 
-// 토큰 정보 받아서 모든 request 날리기 전에 헤더값을 토큰 정보로 설정하기 
 export const setAuthInHeader = token => {
-    axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : null;
+  axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : null;
 }
+
+const {token} = localStorage
+if (token) setAuthInHeader(token)
 
 export const board = {
   fetch() {
     return request('get', '/boards')
+  },
+  create(title) {
+    return request('post', '/boards', {title})
   }
 }
-
 export const auth = {
-    login(email, password) {
-        return request('post', '/login', {email, password})
-    }
+  login(email, password) {
+    return request('post', '/login', {email, password}) 
+  }
 }
