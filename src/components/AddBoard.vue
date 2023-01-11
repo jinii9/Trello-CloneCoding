@@ -22,8 +22,8 @@
 </template>
 
 <script>
+import {mapMutations, mapActions} from 'vuex'
 import Modal from './Modal.vue'
-import { mapMutations, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -48,18 +48,15 @@ export default {
       'SET_IS_ADD_BOARD'
     ]),
     ...mapActions([
-      'ADD_BOARD'
+      'ADD_BOARD',
+      'FETCH_BOARDS' // 추가
     ]),
-    // close() {
-    //   this.$emit('close')
-    // },
     addBoard() {
-      // this.$emit('close')
       this.SET_IS_ADD_BOARD(false)
-      // this.$emit('submit', this.input)
-      this.$emit('submit')
-      // this.$store.dispatch('ADD_BOARD', {title: this.input})
-      this.ADD_BOARD({title: this.input})
+      this.ADD_BOARD({title: this.input}).then(() => { // submit 이벤트 발생 없이(Home컴포넌트로 이동) 이렇게 바로 fetch하기
+        this.FETCH_BOARDS()
+      })
+      // this.$emit('submit')
     }
   }
 }

@@ -14,14 +14,14 @@
         </a>
       </div>
     </div>
-    <AddBoard v-if="isAddBoard" @close="isAddBoard=false" @submit="onAddBoard"/>
+    <AddBoard v-if="isAddBoard"/>
   </div>
 </template>
 
 <script>
+import {mapState, mapMutations, mapActions} from 'vuex'
 import {board} from '../api'
 import AddBoard from './AddBoard.vue'
-import { mapState, mapMutations } from 'vuex'
 
 export default {
   components: {
@@ -30,21 +30,15 @@ export default {
   data() {
     return {
       loading: false,
-      boards: [],
-      error: '',
-      // isAddBoard: false
+      // boards: [],
+      error: ''
     }
   },
-  // computed: {
-  //   isAddBoard() {
-  //     return this.$store.state.isAddBoard
-  //   }
-  // },
   computed: {
-    ...mapState([
-      'isAddBoard'
-    ]),
-    // computed 속성 더 추가할 수 있도록
+    ...mapState({
+      isAddBoard: 'isAddBoard',
+      boards: 'boards' // store로부터 상태 가져와서 html에서 변수처럼 쓸 수 있도록
+    })
   },
   created() {
     this.fetchData()
@@ -58,23 +52,20 @@ export default {
     ...mapMutations([
       'SET_IS_ADD_BOARD'
     ]),
+    ...mapActions([
+      'FETCH_BOARDS'
+    ]),
     fetchData() {
       this.loading = true
-      board.fetch()
-        .then(data => {
-          this.boards = data.list
-        })
-        .finally(_=> {
+
+      // 변경 부분
+      this.FETCH_BOARDS().finally(_=> {
           this.loading = false
         })
     },
-    // addBoard() {
-    //   // this.isAddBoard = true
-    //   this.$store.commit('SET_IS_ADD_BOARD', true)
-    // },
-    onAddBoard() {
-      this.fetchData()
-    }
+    // onAddBoard(title) {
+    //   this.fetchData()
+    // }
   }
 }
 </script>
